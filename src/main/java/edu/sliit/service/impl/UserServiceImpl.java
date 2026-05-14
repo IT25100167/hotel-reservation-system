@@ -7,7 +7,9 @@ import edu.sliit.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -31,11 +33,27 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getUser() {
-        return List.of();
+       List<UserEntity> userEntities=userRepository.findAll();
+        List<User> users=new ArrayList<>();
+        for(UserEntity entity: userEntities){
+        User user=new User();
+        user.setUserId(entity.getUserId());
+        user.setName(entity.getName());
+        user.setEmail(entity.getEmail());
+        user.setPassword(entity.getPassword());
+        user.setPhoneNum(entity.getPhoneNum());
+         users.add(user);
+
+        }
+        return users;
     }
 
     @Override
     public void deleteById(Integer id) {
+        UserEntity userEntity = userRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("User not found"));
+        userRepository.delete(userEntity);
 
     }
 
