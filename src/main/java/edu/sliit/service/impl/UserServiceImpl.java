@@ -17,7 +17,7 @@ public class UserServiceImpl implements UserService {
     final UserRepository userRepository;
 
     @Override
-    public void addUser(User user) {
+    public void addUsers(User user) {
         UserEntity userEntity=new UserEntity();
         userEntity.setUserId(user.getUserId());
         userEntity.setName(user.getName());
@@ -42,5 +42,18 @@ public class UserServiceImpl implements UserService {
     @Override
     public User updateUser(User user) {
         return null;
+    }
+
+    @Override
+    public User findById(int id) {
+        UserEntity userEntity = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        User user=new User();
+        user.setUserId(user.getUserId());
+        user.setEmail(user.getEmail());
+        user.setName(user.getName());
+        user.setPassword(user.getPassword());
+        user.setPhoneNum(userEntity.getPhoneNum());
+        return user;
     }
 }
