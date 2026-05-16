@@ -17,12 +17,15 @@ public class UserEntity {
     private Integer userId;
     @Column(name = "user_name",nullable = false)
     private String name;
-    @Column(name = "email",nullable = false)
+    @Column(name = "email", unique = true, nullable = false)
     private String email;
     @Column(name = "password",nullable = false)
     private String password;
     @Column(name = "phone_number")
     private String phoneNum;
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
 
 
 }
