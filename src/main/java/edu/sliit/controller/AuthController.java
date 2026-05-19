@@ -2,6 +2,7 @@ package edu.sliit.controller;
 
 import edu.sliit.dto.LoginRequest;
 import edu.sliit.dto.LoginResponse;
+import edu.sliit.dto.User;
 import edu.sliit.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +17,12 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
-        LoginResponse response = userService.login(request);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(userService.login(request));
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<String> register(@RequestBody User user) {
+        userService.addUsers(user);
+        return ResponseEntity.ok("Registered successfully");
     }
 }
