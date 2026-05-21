@@ -34,7 +34,6 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("Password must contain at least 6 characters");
         }
         UserEntity userEntity = new UserEntity();
-        userEntity.setUserId(user.getUserId());
         userEntity.setName(user.getName());
         userEntity.setEmail(user.getEmail());
         userEntity.setPassword(user.getPassword());
