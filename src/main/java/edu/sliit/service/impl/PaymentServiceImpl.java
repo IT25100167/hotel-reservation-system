@@ -1,102 +1,135 @@
 package edu.sliit.service.impl;
 
-import edu.sliit.dto.Payment;
+import edu.sliit.dto.PaymentRequest;
+import edu.sliit.dto.PaymentResponse;
 import edu.sliit.entity.PaymentEntity;
+import edu.sliit.entity.ReservationEntity;
 import edu.sliit.repository.PaymentRepository;
+import edu.sliit.repository.ReservationRepository;
 import edu.sliit.service.PaymentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class PaymentServiceImpl implements PaymentService {
 
     private final PaymentRepository paymentRepository;
+    private final ReservationRepository reservationRepository;
 
     @Override
-    public void addPayment(Payment payment) {
-        PaymentEntity entity = new PaymentEntity();
-        entity.setReservationId(payment.getReservationId());
-        entity.setCustomerName(payment.getCustomerName());
-        entity.setAmount(payment.getAmount());
-        entity.setPaymentMethod(payment.getPaymentMethod());
-        entity.setPaymentStatus(payment.getPaymentStatus());
-        entity.setPaymentDate(LocalDateTime.now());
-        entity.setTransactionReference(payment.getTransactionReference());
-
-        paymentRepository.save(entity);
-    }
-
-    @Override
-    public List<Payment> getAllPayments() {
-        List<Payment> payments = new ArrayList<>();
-
-        for (PaymentEntity entity : paymentRepository.findAll()) {
-            payments.add(convertToDto(entity));
+    public void addPayment(PaymentRequest request) {
+        if (request.getReservationId() == null) {
+            throw new RuntimeException("Reservation ID is required");
         }
 
-        return payments;
-    }
-
-    @Override
-    public Payment getPaymentById(Long id) {
-        PaymentEntity entity = paymentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Payment not found"));
-        return convertToDto(entity);
-    }
-
-    @Override
-    public List<Payment> getPaymentsByReservationId(Long reservationId) {
-        List<Payment> payments = new ArrayList<>();
-
-        for (PaymentEntity entity : paymentRepository.findByReservationId(reservationId)) {
-            payments.add(convertToDto(entity));
+        if (request.getAmount() == null || request.getAmount() <= 0) {
+            throw new RuntimeException("Amount must be greater than 0");
         }
 
-        return payments;
+        PaymentEntity payment = new PaymentEntity();
+        payment.setReservationId(request.getReservationId());
+        payment.setUserId(request.getUserId());
+        payment.setRoomId(request.getRoomId());
+        payment.setAmount(request.getAmount());
+        payment.setPaymentMethod(request.getPaymentMethod() != null ? request.getPaymentMethod() : "PENDING");
+        payment.setStatus("COMPLETED");
+        payment.setCreatedAt(LocalDateTime.now());
+
+        paymentRepository.save(payment);
     }
 
     @Override
-    public Payment getPaymentByTransactionReference(String transactionReference) {
-        PaymentEntity entity = paymentRepository.findByTransactionReference(transactionReference)
-                .orElseThrow(() -> new RuntimeException("Payment not found"));
-        return convertToDto(entity);
+    public List<PaymentResponse> getAllPayments() {
+        List<PaymentEntity> paymentEntities = paymentRepository.findAll();
+        List<PaymentResponse> responses = new ArrayList<>();
+
+        for (PaymentEntity entity : paymentEntities) {
+            responses.add(convertToResponse(entity));
+        }
+        return responses;
     }
 
     @Override
-    public void updatePayment(Long id, Payment payment) {
-        PaymentEntity entity = paymentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Payment not found"));
-
-        entity.setReservationId(payment.getReservationId());
-        entity.setCustomerName(payment.getCustomerName());
-        entity.setAmount(payment.getAmount());
-        entity.setPaymentMethod(payment.getPaymentMethod());
-        entity.setPaymentStatus(payment.getPaymentStatus());
-        entity.setTransactionReference(payment.getTransactionReference());
-
-        paymentRepository.save(entity);
+    public PaymentResponse findById(Integer id) {
+        PaymentEntity payment = paymentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Payment not found with id: " + id));
+        return convertToResponse(payment);
     }
 
     @Override
-    public void deletePayment(Long id) {
-        paymentRepository.deleteById(id);
+    public List<PaymentResponse> getUserPayments(Integer userId) {
+        List<PaymentEntity> paymentEntities = paymentRepository.findByUserId(userId);
+        List<PaymentResponse> responses = new ArrayList<>();
+
+        for (PaymentEntity entity : paymentEntities) {
+            responses.add(convertToResponse(entity));
+        }
+        return responses;
     }
 
-    private Payment convertToDto(PaymentEntity entity) {
-        Payment payment = new Payment();
-        payment.setPaymentId(entity.getPaymentId());
-        payment.setReservationId(entity.getReservationId());
-        payment.setCustomerName(entity.getCustomerName());
-        payment.setAmount(entity.getAmount());
-        payment.setPaymentMethod(entity.getPaymentMethod());
-        payment.setPaymentStatus(entity.getPaymentStatus());
-        payment.setPaymentDate(entity.getPaymentDate());
-        payment.setTransactionReference(entity.getTransactionReference());
-        return payment;
+    @Override
+    public List<PaymentResponse> getReservationPayments(Integer reservationId) {
+        List<PaymentEntity> paymentEntities = paymentRepository.findByReservationId(reservationId);
+        List<PaymentResponse> responses = new ArrayList<>();
+
+        for (PaymentEntity entity : paymentEntities) {
+            responses.add(convertToResponse(entity));
+        }
+        return responses;
+    }
+
+    @Override
+    public void updatePaymentStatus(Integer id, String status) {
+        PaymentEntity payment = paymentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Payment not found with id: " + id));
+
+        payment.setStatus(status);
+        payment.setUpdatedAt(LocalDateTime.now());
+
+        paymentRepository.save(payment);
+    }
+
+    @Override
+    public void createPaymentForConfirmedReservation(Integer reservationId) {
+        System.out.println("Creating payment for reservation: " + reservationId);
+        
+        ReservationEntity reservation = reservationRepository.findById(reservationId)
+                .orElseThrow(() -> new RuntimeException("Reservation not found"));
+
+        System.out.println("Found reservation - userId: " + reservation.getUserId() + ", roomId: " + reservation.getRoomId() + ", amount: " + reservation.getTotalPrice());
+
+        PaymentEntity payment = new PaymentEntity();
+        payment.setReservationId(reservationId);
+        payment.setUserId(reservation.getUserId());
+        payment.setRoomId(reservation.getRoomId());
+        payment.setAmount(reservation.getTotalPrice());
+        payment.setPaymentMethod("ONLINE");
+        payment.setStatus("COMPLETED");
+        payment.setCreatedAt(LocalDateTime.now());
+
+        paymentRepository.save(payment);
+        System.out.println("Payment saved successfully");
+    }
+
+    private PaymentResponse convertToResponse(PaymentEntity entity) {
+        PaymentResponse response = new PaymentResponse();
+        response.setId(entity.getId());
+        response.setReservationId(entity.getReservationId());
+        response.setUserId(entity.getUserId());
+        response.setRoomId(entity.getRoomId());
+        response.setAmount(entity.getAmount());
+        response.setStatus(entity.getStatus());
+        response.setPaymentMethod(entity.getPaymentMethod());
+        response.setTransactionId(entity.getTransactionId());
+        response.setCreatedAt(entity.getCreatedAt());
+        response.setUpdatedAt(entity.getUpdatedAt());
+
+        return response;
     }
 }

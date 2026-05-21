@@ -16,16 +16,13 @@ public class ReservationEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(name = "reservation_number", unique = true, nullable = false)
-    private String reservationNumber;
+    private Integer id;
 
     @Column(name = "user_id", nullable = false)
-    private Long userId;
+    private Integer userId;
 
     @Column(name = "room_id", nullable = false)
-    private Long roomId;
+    private Integer roomId;
 
     @Column(name = "check_in_date", nullable = false)
     private LocalDate checkInDate;
@@ -40,26 +37,11 @@ public class ReservationEntity {
     private Double totalPrice;
 
     @Column(name = "status", nullable = false)
-    private String status; // CONFIRMED, CHECKED_IN, CHECKED_OUT, CANCELLED
-
-    @Column(name = "payment_status", nullable = false)
-    private String paymentStatus; // PENDING, PAID, REFUNDED
+    private String status; // PENDING, CONFIRMED, CANCELLED
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-
-    @Column(name = "special_requests", length = 500)
-    private String specialRequests;
-
-    @Column(name = "guest_name", nullable = false)
-    private String guestName;
-
-    @Column(name = "guest_email", nullable = false)
-    private String guestEmail;
-
-    @Column(name = "guest_phone", nullable = false)
-    private String guestPhone;
 }

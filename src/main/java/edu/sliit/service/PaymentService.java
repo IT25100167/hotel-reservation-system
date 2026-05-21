@@ -1,15 +1,22 @@
 package edu.sliit.service;
 
-import edu.sliit.dto.Payment;
-
+import edu.sliit.dto.PaymentRequest;
+import edu.sliit.dto.PaymentResponse;
 import java.util.List;
 
 public interface PaymentService {
-    void addPayment(Payment payment);
-    List<Payment> getAllPayments();
-    Payment getPaymentById(Long id);
-    List<Payment> getPaymentsByReservationId(Long reservationId);
-    Payment getPaymentByTransactionReference(String transactionReference);
-    void updatePayment(Long id, Payment payment);
-    void deletePayment(Long id);
+
+    void addPayment(PaymentRequest request);
+
+    List<PaymentResponse> getAllPayments();
+
+    PaymentResponse findById(Integer id);
+
+    List<PaymentResponse> getUserPayments(Integer userId);
+
+    List<PaymentResponse> getReservationPayments(Integer reservationId);
+
+    void updatePaymentStatus(Integer id, String status);
+
+    void createPaymentForConfirmedReservation(Integer reservationId);
 }
