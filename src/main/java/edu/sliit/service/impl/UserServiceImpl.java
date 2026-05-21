@@ -5,19 +5,24 @@ import edu.sliit.dto.LoginResponse;
 import edu.sliit.dto.User;
 import edu.sliit.entity.Role;
 import edu.sliit.entity.UserEntity;
-import edu.sliit.repository.UserRepository;
+import edu.sliit.entity.StaffEntity;
+import edu.sliit.repository.StaffRepository;
 import edu.sliit.service.UserService;
 import edu.sliit.util.ValidationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
+import edu.sliit.repository.UserRepository;
 
 @RequiredArgsConstructor
 @Service
 public class UserServiceImpl implements UserService {
 
     final UserRepository userRepository;
+    final StaffRepository staffRepository;
 
     @Override
     public void addUsers(User user) {
@@ -112,6 +117,16 @@ public class UserServiceImpl implements UserService {
         if (request.getEmail().equals("admin") && request.getPassword().equals("admin")) {
             return new LoginResponse(0, "Admin", "admin", Role.ADMIN);
         }
+
+        // Staff table check
+        Optional<StaffEntity> staffOpt = staffRepository.findByEmailAndPassword(
+                request.getEmail(), request.getPassword());
+        if (staffOpt.isPresent()) {
+            StaffEntity staff = staffOpt.get();
+            return new LoginResponse(staff.getId(), staff.getName(), staff.getEmail(), Role.STAFF);
+        }
+
+        // Customer (users) table check
         UserEntity user = userRepository.findByEmailAndPassword(request.getEmail(), request.getPassword())
                 .orElseThrow(() -> new RuntimeException("Invalid email or password"));
         return new LoginResponse(user.getUserId(), user.getName(), user.getEmail(), user.getRole());

@@ -35,9 +35,9 @@ const ADMIN_LINKS: SidebarLink[] = [
 
 const STAFF_LINKS: SidebarLink[] = [
   { href: '/dashboard/staff', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
-  { href: '/dashboard/staff/check-ins', label: 'Check-ins', icon: <DoorOpen size={20} /> },
-  { href: '/dashboard/staff/check-outs', label: 'Check-outs', icon: <DoorOpen size={20} /> },
-  { href: '/dashboard/staff/room-status', label: 'Room Status', icon: <LayoutDashboard size={20} /> },
+  { href: '/dashboard/admin/rooms', label: 'Rooms', icon: <DoorOpen size={20} /> },
+  { href: '/dashboard/admin/bookings', label: 'Bookings', icon: <BookOpen size={20} /> },
+  { href: '/dashboard/admin/users', label: 'Users', icon: <Users size={20} /> },
 ];
 
 interface SidebarProps {

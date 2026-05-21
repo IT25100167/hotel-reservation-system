@@ -3,7 +3,9 @@ package edu.sliit.repository;
 import edu.sliit.entity.StaffEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface StaffRepository extends JpaRepository<StaffEntity,Integer> {
+import java.util.Optional;
 
-    boolean existsByEmail(String attr0);
+public interface StaffRepository extends JpaRepository<StaffEntity,Integer> {
+    boolean existsByEmail(String email);
+    Optional<StaffEntity> findByEmailAndPassword(String email, String password);
 }
