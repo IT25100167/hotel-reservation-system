@@ -15,18 +15,14 @@ public class RoomController {
 
     private final RoomService roomService;
 
-    @PostMapping
-    public void addRoom(@RequestBody Room room) {
+    @PostMapping("/add")
+    public ResponseEntity<String> addRoom(@RequestBody Room room) {
         roomService.addRoom(room);
+        return ResponseEntity.ok("Room added successfully");
     }
 
     @GetMapping
     public ResponseEntity<List<Room>> getAllRooms() {
         return ResponseEntity.ok(roomService.getAllRooms());
-    }
-
-    @PutMapping
-    public void updateRoom(@RequestBody Room room) {
-        roomService.updateRoom(room);
     }
 }
