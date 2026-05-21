@@ -3,7 +3,10 @@ package edu.sliit.controller;
 import edu.sliit.dto.Room;
 import edu.sliit.service.RoomService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/rooms")
@@ -15,6 +18,11 @@ public class RoomController {
     @PostMapping
     public void addRoom(@RequestBody Room room) {
         roomService.addRoom(room);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Room>> getAllRooms() {
+        return ResponseEntity.ok(roomService.getAllRooms());
     }
 
     @PutMapping
