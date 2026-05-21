@@ -102,9 +102,6 @@ function RoomsContent() {
           checkInDate: bookingData.checkIn,
           checkOutDate: bookingData.checkOut,
           numberOfGuests: parseInt(bookingData.guests),
-          guestName: currentUser.name,
-          guestEmail: currentUser.email,
-          guestPhone: '',
         }),
       });
 

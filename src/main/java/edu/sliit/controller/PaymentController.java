@@ -1,43 +1,70 @@
 package edu.sliit.controller;
 
-import edu.sliit.dto.Payment;
+import edu.sliit.dto.PaymentRequest;
+import edu.sliit.dto.PaymentResponse;
 import edu.sliit.service.PaymentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
 @RequestMapping("/payments")
 @RequiredArgsConstructor
-
 public class PaymentController {
 
     private final PaymentService paymentService;
 
     @PostMapping("/add")
-    public void addPayment(@RequestBody Payment payment) {
-        paymentService.addPayment(payment);
+    public ResponseEntity<String> addPayment(@RequestBody PaymentRequest request) {
+        try {
+            paymentService.addPayment(request);
+            return ResponseEntity.ok("Payment created successfully");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<Payment>> getAllPayments() {
-        return ResponseEntity.ok(paymentService.getAllPayments());
+    public ResponseEntity<List<PaymentResponse>> getAllPayments() {
+        List<PaymentResponse> payments = paymentService.getAllPayments();
+        return ResponseEntity.ok(payments);
     }
 
     @GetMapping("/search/{id}")
-    public ResponseEntity<Payment> getPaymentById(@PathVariable Long id) {
-        return ResponseEntity.ok(paymentService.getPaymentById(id));
+    public ResponseEntity<PaymentResponse> searchPaymentById(@PathVariable Integer id) {
+        return ResponseEntity.ok(paymentService.findById(id));
     }
 
-    @PutMapping("/update/{id}")
-    public void updatePayment(@PathVariable Long id, @RequestBody Payment payment) {
-        paymentService.updatePayment(id, payment);
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<PaymentResponse>> getUserPayments(@PathVariable Integer userId) {
+        List<PaymentResponse> payments = paymentService.getUserPayments(userId);
+        return ResponseEntity.ok(payments);
     }
 
-    @DeleteMapping("/delete/{id}")
-    public void deletePayment(@PathVariable Long id) {
-        paymentService.deletePayment(id);
+    @GetMapping("/reservation/{reservationId}")
+    public ResponseEntity<List<PaymentResponse>> getReservationPayments(@PathVariable Integer reservationId) {
+        List<PaymentResponse> payments = paymentService.getReservationPayments(reservationId);
+        return ResponseEntity.ok(payments);
+    }
+
+    @PutMapping("/status/{id}")
+    public ResponseEntity<String> updatePaymentStatus(@PathVariable Integer id, @RequestParam String status) {
+        try {
+            paymentService.updatePaymentStatus(id, status);
+            return ResponseEntity.ok("Payment status updated");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/create-for-reservation/{reservationId}")
+    public ResponseEntity<String> createPaymentForReservation(@PathVariable Integer reservationId) {
+        try {
+            paymentService.createPaymentForConfirmedReservation(reservationId);
+            return ResponseEntity.ok("Payment created for reservation");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

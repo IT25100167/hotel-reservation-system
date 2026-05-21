@@ -4,38 +4,43 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.time.LocalDateTime;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "payments")
-
 public class PaymentEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long paymentId;
+    private Integer id;
 
-    @Column(nullable = false)
-    private Long reservationId;
+    @Column(name = "reservation_id", nullable = false)
+    private Integer reservationId;
 
-    @Column(nullable = false)
-    private String customerName;
+    @Column(name = "user_id", nullable = false)
+    private Integer userId;
 
-    @Column(nullable = false)
+    @Column(name = "room_id", nullable = false)
+    private Integer roomId;
+
+    @Column(name = "amount", nullable = false)
     private Double amount;
 
-    @Column(nullable = false)
+    @Column(name = "status", nullable = false)
+    private String status;
+
+    @Column(name = "payment_method")
     private String paymentMethod;
 
-    @Column(nullable = false)
-    private String paymentStatus;
+    @Column(name = "transaction_id")
+    private String transactionId;
 
-    private LocalDateTime paymentDate;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
-    @Column(unique = true)
-    private String transactionReference;
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 }

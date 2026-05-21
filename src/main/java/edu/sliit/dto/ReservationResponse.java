@@ -10,18 +10,13 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ReservationResponse {
-    private Long id;
-    private String reservationNumber;
-    private Long roomId;
+    private Integer id;
+    private Integer userId;
+    private Integer roomId;
     private LocalDate checkInDate;
     private LocalDate checkOutDate;
     private Integer numberOfGuests;
     private Double totalPrice;
     private String status;
-    private String paymentStatus;
-    private String specialRequests;
-    private String guestName;
-    private String guestEmail;
-    private String guestPhone;
     private LocalDateTime createdAt;
 }

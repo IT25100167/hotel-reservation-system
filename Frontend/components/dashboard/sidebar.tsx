@@ -13,6 +13,7 @@ import {
   LogOut,
   Menu,
   X,
+  CreditCard,
 } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
@@ -28,6 +29,7 @@ const ADMIN_LINKS: SidebarLink[] = [
   { href: '/dashboard/admin/users', label: 'Users', icon: <Users size={20} /> },
   { href: '/dashboard/admin/rooms', label: 'Rooms', icon: <DoorOpen size={20} /> },
   { href: '/dashboard/admin/bookings', label: 'Bookings', icon: <BookOpen size={20} /> },
+  { href: '/dashboard/admin/payments', label: 'Payments', icon: <CreditCard size={20} /> },
   { href: '/dashboard/admin/staff', label: 'Staff', icon: <Users size={20} /> },
   { href: '/dashboard/admin/reports', label: 'Reports', icon: <LayoutDashboard size={20} /> },
   { href: '/dashboard/admin/settings', label: 'Settings', icon: <Settings size={20} /> },
@@ -37,6 +39,7 @@ const STAFF_LINKS: SidebarLink[] = [
   { href: '/dashboard/staff', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
   { href: '/dashboard/admin/rooms', label: 'Rooms', icon: <DoorOpen size={20} /> },
   { href: '/dashboard/admin/bookings', label: 'Bookings', icon: <BookOpen size={20} /> },
+  { href: '/dashboard/staff/payments', label: 'Payments', icon: <CreditCard size={20} /> },
   { href: '/dashboard/admin/users', label: 'Users', icon: <Users size={20} /> },
 ];
 
