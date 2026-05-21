@@ -65,13 +65,15 @@ export function Navbar() {
                 <span className="text-foreground text-sm hidden sm:inline">
                   Welcome, {currentUser?.name}
                 </span>
-                <Button
-                  asChild
-                  variant="outline"
-                  className="border-accent text-accent hover:bg-accent hover:text-primary-foreground"
-                >
-                  <Link href={`/dashboard/${currentUser?.role.toLowerCase()}`}>Dashboard</Link>
-                </Button>
+                {currentUser?.role !== 'CUSTOMER' && (
+                  <Button
+                    asChild
+                    variant="outline"
+                    className="border-accent text-accent hover:bg-accent hover:text-primary-foreground"
+                  >
+                    <Link href={`/dashboard/${currentUser?.role.toLowerCase()}`}>Dashboard</Link>
+                  </Button>
+                )}
                 <Button
                   variant="ghost"
                   onClick={handleLogout}

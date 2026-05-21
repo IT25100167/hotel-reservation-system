@@ -40,11 +40,6 @@ const STAFF_LINKS: SidebarLink[] = [
   { href: '/dashboard/staff/room-status', label: 'Room Status', icon: <LayoutDashboard size={20} /> },
 ];
 
-const CUSTOMER_LINKS: SidebarLink[] = [
-  { href: '/dashboard/customer', label: 'My Bookings', icon: <BookOpen size={20} /> },
-  { href: '/dashboard/customer/search', label: 'Book a Room', icon: <DoorOpen size={20} /> },
-];
-
 interface SidebarProps {
   isOpen?: boolean;
   onClose?: () => void;
@@ -67,8 +62,6 @@ export function Sidebar({ isOpen = true, onClose }: SidebarProps) {
         return ADMIN_LINKS;
       case 'STAFF':
         return STAFF_LINKS;
-      case 'CUSTOMER':
-        return CUSTOMER_LINKS;
       default:
         return [];
     }

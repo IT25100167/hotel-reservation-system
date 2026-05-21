@@ -1,21 +1,25 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Search, CalendarDays, Users, BedDouble } from 'lucide-react';
 
-export function Hero() {
-  const router = useRouter();
+interface HeroProps {
+  onSearch?: (filters: { roomType: string; checkIn: string; checkOut: string; guests: string }) => void;
+}
+
+export function Hero({ onSearch }: HeroProps) {
   const [roomType, setRoomType] = useState('');
   const [checkIn, setCheckIn] = useState('');
   const [checkOut, setCheckOut] = useState('');
   const [guests, setGuests] = useState('1');
 
   const handleSearch = () => {
-    const params = new URLSearchParams({ roomType, checkIn, checkOut, guests });
-    router.push(`/auth?${params.toString()}`);
+    // Pass filters up to parent (page.tsx) and scroll to rooms
+    if (onSearch) {
+      onSearch({ roomType, checkIn, checkOut, guests });
+    }
+    document.getElementById('rooms')?.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
@@ -32,14 +36,8 @@ export function Hero() {
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70" />
       </div>
 
-      {/* Content */}
       <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center pt-24 pb-16">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9 }}
-        >
-          {/* Badge */}
+        <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9 }}>
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -54,7 +52,6 @@ export function Hero() {
             Find Your Perfect
             <span className="block text-amber-300">Dream Stay</span>
           </h1>
-
           <p className="text-white/70 text-lg md:text-xl mb-12 max-w-2xl mx-auto">
             Discover handpicked luxury rooms and suites. Book your ideal getaway in seconds.
           </p>
@@ -68,7 +65,6 @@ export function Hero() {
           className="bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl p-6 md:p-8"
         >
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            {/* Room Type */}
             <div className="text-left">
               <label className="flex items-center gap-1.5 text-xs font-semibold text-amber-800 uppercase tracking-wide mb-2">
                 <BedDouble size={14} /> Room Type
@@ -85,7 +81,6 @@ export function Hero() {
               </select>
             </div>
 
-            {/* Check In */}
             <div className="text-left">
               <label className="flex items-center gap-1.5 text-xs font-semibold text-amber-800 uppercase tracking-wide mb-2">
                 <CalendarDays size={14} /> Check In
@@ -98,7 +93,6 @@ export function Hero() {
               />
             </div>
 
-            {/* Check Out */}
             <div className="text-left">
               <label className="flex items-center gap-1.5 text-xs font-semibold text-amber-800 uppercase tracking-wide mb-2">
                 <CalendarDays size={14} /> Check Out
@@ -111,7 +105,6 @@ export function Hero() {
               />
             </div>
 
-            {/* Guests */}
             <div className="text-left">
               <label className="flex items-center gap-1.5 text-xs font-semibold text-amber-800 uppercase tracking-wide mb-2">
                 <Users size={14} /> Guests
