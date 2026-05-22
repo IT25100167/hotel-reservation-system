@@ -120,6 +120,9 @@ export default function AdminBookingsPage() {
 
   if (loading) return <div className="p-6">Loading...</div>;
 
+  // Filter to show only recent/active bookings (PENDING and CONFIRMED)
+  const recentBookings = bookings.filter(b => b.status === 'PENDING' || b.status === 'CONFIRMED');
+
   return (
     <div className="p-6">
       <h1 className="text-3xl font-bold text-gray-900 mb-2">Bookings Management</h1>
@@ -133,11 +136,11 @@ export default function AdminBookingsPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>All Bookings ({bookings.length})</CardTitle>
+          <CardTitle>Recent Bookings ({recentBookings.length})</CardTitle>
         </CardHeader>
         <CardContent>
-          {bookings.length === 0 ? (
-            <div className="text-center py-8 text-gray-500">No bookings found</div>
+          {recentBookings.length === 0 ? (
+            <div className="text-center py-8 text-gray-500">No active bookings found</div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full">
@@ -154,7 +157,7 @@ export default function AdminBookingsPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y">
-                  {bookings.map(booking => (
+                  {recentBookings.map(booking => (
                     <tr key={booking.id} className="hover:bg-gray-50">
                       <td className="px-6 py-4 text-sm">#{booking.id}</td>
                       <td className="px-6 py-4 text-sm">Room {booking.roomId}</td>
